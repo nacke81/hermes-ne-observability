@@ -1,0 +1,30 @@
+name: ne-observability
+version: 0.2.0
+manifest_version: 1
+api_version: 1
+description: >
+  Local observability for every Hermes profile: skill triggers, subagent runs,
+  approval outcomes, permission issues (blocked/denied/401/403 tool and provider
+  failures), and auxiliary-model calls, all tagged with the profile that produced
+  them. Token/model/cost rollups read each profile's existing state.db.
+  Disclosure: writes metadata-only events (names, statuses, token counts, short
+  redacted error snippets) to plugin-data/ne-observability/events.db under the
+  Hermes root. Nothing leaves the machine. No API keys.
+author: Nacke Enterprises
+license: MIT
+requires_hermes: ">=0.21"
+tags: [observability, telemetry, profiles, tokens, desktop]
+provides_hooks:
+  - on_skill_lifecycle
+  - subagent_start
+  - subagent_stop
+  - pre_approval_request
+  - post_approval_response
+  - post_tool_call
+  - post_auxiliary_call
+  - api_request_error
+config_schema:
+  retention_days:
+    type: int
+    default: 180
+    description: Events older than this are pruned once per process start.
